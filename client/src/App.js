@@ -54,9 +54,12 @@ function App() {
       // messages guarantees that messages is updated based on what it was
       // previously set to.
       // Source: https://dev.to/gakii/functional-state-update-in-react-42io.
-      data => setMessages(
-        previousMessages => [...previousMessages, data.message]
-      )
+      data => {
+        setMessages(
+          previousMessages => [...previousMessages, data.message]
+        )
+      }
+    
     )
 
     setSendDisabled(false)
