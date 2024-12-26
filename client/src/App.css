@@ -1,38 +1,55 @@
-.App {
-  text-align: center;
+/*
+  Since body may have margin or padding my default, they are both set to zero
+  here to ensure page looks correct.
+*/
+body {
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/*
+  Fixing the position here ensures that when there is overflow within the
+  message section, a scrollbar will be added in that section, not for the
+  whole page. This prevents issues with the column-reverse automatically
+  scrolling to the bottom.
+*/
+.messageSection {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-direction: column-reverse;
+  overflow: auto;
+  height: 90%;
+  width: 100%;
+  position: fixed;
 }
 
-.App-link {
-  color: #61dafb;
+.inputSection {
+  height: 10%;
+  display: grid;
+  grid-template-columns: 89.5% 9.5%;
+  width: 100%;
+  column-gap: 1%;
+  position: fixed;
+  bottom: 0px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.userMessage {
+  background-color: #aee4f3;
+  height: fit-content;
+  width: fit-content;
+  max-width: 80%;
+  align-self: end;
+  padding: 5px 10px 5px 10px;
+  border-radius: 20px;
+  margin-right: 2%;
+}
+
+.chatbotMessage {
+  background-color: #d7d7d7;
+  height: fit-content;
+  width: fit-content;
+  max-width: 80%;
+  align-self: start;
+  padding: 5px 10px 5px 10px;
+  border-radius: 20px;
+  margin-left: 2%;
 }
