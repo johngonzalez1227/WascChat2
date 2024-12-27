@@ -19,7 +19,7 @@ app = Flask(__name__)
 # sends back the chatbot's response.
 
 @app.route("/chat", methods = ["POST"])
-@cross_origin(origins = [frontend_url], allow_headers = "Content-Type")
+@cross_origin(origins = ["*"], allow_headers = "Content-Type")
 def chat():
     '''
     This function returns messages based on a frontend conversation.

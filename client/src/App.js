@@ -75,7 +75,7 @@ function App() {
         <MessageDisplay messages = {messages} />
       </div>
 
-      <div class = "inputSection">
+      <div className = "inputSection">
         
         <input
           placeholder= "Enter your inquiry" 
