@@ -163,6 +163,9 @@ function MessageDisplay({messages}) {
     return messageBody;
   }
 
+  // Since the messages are displayed with flex and column reverse to ensure
+  // that the bottom of the messages are always in view, for the messages to
+  // be in order, they are looped through and outputted in reverse order.  
   const messageChain = [...messages].reverse().map((message, i) => {
 
     // User messages are even since message 0 is from the user and messages
