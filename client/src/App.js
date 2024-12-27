@@ -79,7 +79,13 @@ function App() {
         
         <input
           placeholder= "Enter your inquiry" 
-          onChange = {newTextEvent => setCurrMessage(newTextEvent.target.value)} 
+          onChange = {newTextEvent => setCurrMessage(newTextEvent.target.value)}
+          onKeyDown = {(e) => {
+            // This makes the enter key have the same effect as the send button.
+            if (e.key === "Enter") {
+              getMessage()
+            }
+          }} 
           value = {currMessage}
           style={
             // marginRight is not needed as that is handled by the gap between
