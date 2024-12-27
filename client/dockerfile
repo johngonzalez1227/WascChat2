@@ -14,6 +14,8 @@ FROM nginx:1.27.3-alpine AS production
 
 COPY --from=build /app/build /usr/share/nginx/html
 
+EXPOSE 80
+
 # Since containers should only run one process, daemon is set to off so that
 # nginx runs in the foreground rather than the background.
 CMD [ "nginx", "-g", "daemon off;"]
