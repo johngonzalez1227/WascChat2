@@ -3,9 +3,11 @@ import "./App.css"
 
 function App() {
 
-  const [messages, setMessages] = useState([])
-  const [sendDisabled, setSendDisabled] = useState(false)
-  const [currMessage, setCurrMessage] = useState("")
+  const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app"
+  //const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app"
+  const [messages, setMessages] = useState([]);
+  const [sendDisabled, setSendDisabled] = useState(false);
+  const [currMessage, setCurrMessage] = useState("");
 
   const getMessage = async () => {
 
@@ -38,7 +40,7 @@ function App() {
     
     // Headers mandatory for requests that include content like POST
     await fetch(
-      "/chat",
+      backendUrl + "/chat",
       {
         method: "POST", 
         body: JSON.stringify(frontendMessagesJson),
@@ -61,7 +63,7 @@ function App() {
         );
       }
     
-    );
+    ).catch(error => console.error('Error:', error));;
 
     setSendDisabled(false);
   }
@@ -69,7 +71,7 @@ function App() {
   return (
     <div>
 
-      <div class = "messageSection">
+      <div className = "messageSection">
         <MessageDisplay messages = {messages} />
       </div>
 
@@ -128,11 +130,11 @@ function MessageDisplay({messages}) {
 
     for (let i = 0; i < messageSections.length; i++) {
       if (i % 2 === 0) {
-        sectionsWithBoldText.push(<>{messageSections[i]}</>);
+        sectionsWithBoldText.push(<React.Fragment key = {i}>{messageSections[i]}</React.Fragment>);
       }
 
       else {
-        sectionsWithBoldText.push(<b>{messageSections[i]}</b>);
+        sectionsWithBoldText.push(<b key = {i}>{messageSections[i]}</b>);
       }
     }
 
@@ -148,11 +150,12 @@ function MessageDisplay({messages}) {
 
     // <> stands for Fragment. This is a react component that allows you to
     // return multiple HTML components or a component without a container.
+    // Here Fragments are types out so that keys can be given to them.
 
     for (let i = 0; i < messageLines.length - 1; i++) {
-      messageBody.push(<>
-        {asterisksToBold(messageLines[i])}<br />
-      </>);
+      messageBody.push(<React.Fragment key = {i}>
+        {asterisksToBold(messageLines[i])}<br /> 
+      </React.Fragment>);
     }
 
     messageBody.push(messageLines[messageLines.length - 1]);
@@ -171,7 +174,7 @@ function MessageDisplay({messages}) {
     "userMessage" : "chatbotMessage";
 
       return (
-        <p key = {i} class = {messageClass}>
+        <p key = {i} className = {messageClass}>
           {messageToHtml(message)}
         </p>
       );
@@ -180,7 +183,7 @@ function MessageDisplay({messages}) {
   
 
   return (
-    <div class = "messageSection">
+    <div className = "messageSection">
       {messageChain}
     </div>
   );

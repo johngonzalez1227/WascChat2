@@ -12,6 +12,10 @@ def send_message(frontend_conversation):
     Returns: a string hodling the output message.
     '''
 
+    # This placeholder comes from the original conversation had with the
+    # chatbot in training.
+    responsePlaceholder = "Okay, let's dive into the specific action steps and activities for **Goal #1: College and Career Readiness**. Here's a breakdown of what ACHS plans to do to achieve this goal:\n\n*   **1.1 Enhance A-G Completion Rate:**\n    *   Training for counselors and teachers on A-G pathways.\n    *   Integration of A-G tracking in student information systems.\n    *   Workshops for parents and students on the importance of A-G completion.\n    *   Continued implementation of the Restorative Intervention Campus program to identify students in need of support earlier in the process.\n*   **1.2 Boost CTE Pathway Completion Rate:**\n    *   Collaboration with community colleges and local businesses for internships.\n    *   Additional CTE pathways that align with student interest.\n    *   Targeted support and counseling for EL students.\n    *   Additional funding for pathway-specific resources.\n*   **1.3 Increase Dual Enrollment Participation:**\n    *   Partnerships with local colleges.\n    *   Promotional materials for students and parents.\n    *   Dedicated time during Scorpion Connect sessions for information sessions.\n    *   Training for teachers on dual enrollment benefits.\n*   **1.4 Improve CAASPP Scores in ELA and Math:**\n    *   Data analysis tools for interim assessments.\n    *   Professional development for teachers on using data to inform instruction.\n    *   Targeted tutoring or intervention programs.\n\nThese action steps are designed to be specific, measurable, achievable, relevant, and time-bound (SMART), and they provide a roadmap for how ACHS will work towards improving college and career readiness for all students.\n\nWould you like to know more about the measurable student-focused outcomes for Goal #1, or would you like to explore another goal or aspect of the action plan?"
+
     # The contents array is copied. Then a placeholder response from the model
     # is added because by default because the Python code provided by Vertex AI
     # cuts off the training conversation before the chatbot responds. So, the
@@ -27,7 +31,7 @@ def send_message(frontend_conversation):
         types.Content(
             role = "model",
             parts=[
-                types.Part.from_text("Placeholder")
+                types.Part.from_text(responsePlaceholder)
             ]
         )
     )
