@@ -1,4 +1,4 @@
-FROM node:23.5.0
+FROM node:23.5.0 AS build
 
 WORKDIR /app
 
@@ -8,6 +8,14 @@ RUN npm install
 
 COPY . ./
 
-EXPOSE 3000
+RUN npm run build
 
-CMD [ "npm", "start", "--", "--port", "3000"]
+FROM nginx:1.27.3-alpine AS production
+
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+# Since containers should only run one process, daemon is set to off so that
+# nginx runs in the foreground rather than the background.
+CMD [ "nginx", "-g", "daemon off;"]
