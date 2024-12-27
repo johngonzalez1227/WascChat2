@@ -2,7 +2,7 @@ from flask import Flask, request
 import messaging
 from flask_cors import cross_origin
 
-frontend_url = "https://wasc-chatbot-frontend-15118306301.us-central1.run.app/"
+frontend_url = "https://wasc-chatbot-frontend-15118306301.us-central1.run.app"
 
 app = Flask(__name__)
 
