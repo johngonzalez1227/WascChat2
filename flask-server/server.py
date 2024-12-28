@@ -7,19 +7,17 @@ frontend_url = "https://wasc-chatbot-frontend-15118306301.us-central1.run.app"
 app = Flask(__name__)
 
 
-# CORS is configured so that the app allows requests from the frontend URL.
-# Since a JSON fetch request is made to the /chat endpoint, with the header
-# specifying that the content type is application/json, headers must be
-# allowed.
-
-#CORS(app)
+# Cross origin is configured so that the /chat endpoint allows requests from
+# the frontend URL. Since a JSON fetch request is made to the /chat endpoint,
+# with the header specifying that the content type is application/json, the
+# Content-Type header must be allowed.
 
 # Chat API Route: this endpoint is for HTTP POST requests and it allows
 # conversations from the frontend to be sent to the Vertex AI chatbot then
 # sends back the chatbot's response.
 
 @app.route("/chat", methods = ["POST"])
-@cross_origin(origins = [frontend_url], allow_headers = "Content-Type")
+@cross_origin(origins = frontend_url, allow_headers = "Content-Type")
 def chat():
     '''
     This function returns messages based on a frontend conversation.

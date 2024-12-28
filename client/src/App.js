@@ -4,7 +4,6 @@ import "./App.css"
 function App() {
 
   const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app"
-  //const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app"
   const [messages, setMessages] = useState([]);
   const [sendDisabled, setSendDisabled] = useState(false);
   const [currMessage, setCurrMessage] = useState("");
