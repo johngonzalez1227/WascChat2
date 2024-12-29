@@ -39,8 +39,6 @@ def send_message(frontend_conversation):
     # The frontend conversation is added to the full conversation.
     full_conversation.extend(frontend_conversation)
 
-    output_message = ""
-
 
     # The generate_content_stream method sends a message to Vertex AI. Then
     # in this for loop, parts of the response stream are added to
@@ -50,9 +48,8 @@ def send_message(frontend_conversation):
         contents = full_conversation,
         config = chat_information.generate_content_config
     ):
-        output_message += chunk.text
 
-        yield output_message
+        yield chunk.text
 
 def format_frontend(frontend):
     '''
