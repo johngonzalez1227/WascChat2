@@ -2,14 +2,14 @@ import chat_information
 from google.genai import types
 
 def send_message(frontend_conversation):
-
     '''
     This function actually sends a message to Vertex AI and gets its response
     based on the frontend conversation.
     Arguments:
         frontend_conversation: a list of of objects of type types.Part holding
         information from the frontend json (after it has been formatted).
-    Returns: a string hodling the output message.
+    Yields: 
+        chunks of a string holding the output message.
     '''
 
     # This placeholder comes from the original conversation had with the
@@ -39,8 +39,6 @@ def send_message(frontend_conversation):
     # The frontend conversation is added to the full conversation.
     full_conversation.extend(frontend_conversation)
 
-    output_message = ""
-
 
     # The generate_content_stream method sends a message to Vertex AI. Then
     # in this for loop, parts of the response stream are added to
@@ -50,9 +48,7 @@ def send_message(frontend_conversation):
         contents = full_conversation,
         config = chat_information.generate_content_config
     ):
-        output_message += chunk.text
-
-    return output_message
+        yield chunk.text
 
 def format_frontend(frontend):
     '''

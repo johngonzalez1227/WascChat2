@@ -48,23 +48,81 @@ function App() {
         }
       }
     ).then(
-      res => res.json()
+      // body is a property of res of type ReadableStream.
+      res => res.body
     ).then(
-      // Using setMessages([...messages, data.message]) does not work because
-      // the previous setMessages has not necessarily actually been performed
-      // yet because state updates are batched together. Functionally updating
-      // messages guarantees that messages is updated based on what it was
-      // previously set to.
-      // Source: https://dev.to/gakii/functional-state-update-in-react-42io.
-      data => {
-        setMessages(
-          previousMessages => [...previousMessages, data.message]
-        );
-      }
-    
-    ).catch(error => console.error('Error:', error));;
+      async resStream => {
 
-    setSendDisabled(false);
+        // A TextDecoderStream object converts a stream of binary text to a
+        // stream of strings. A ReadableStream can be piped through a 
+        // TextDecoderStream to convert it to a stream of strings.
+
+        const streamDecoder = new TextDecoderStream("utf-8");
+
+        const resStreamText = resStream.pipeThrough(streamDecoder);
+
+        // This method creates a reader that can read the stream assigned to
+        // resStream. This object is a ReadableDefaultStreamReader.
+        const reader = resStreamText.getReader();
+
+        let chatbotResponse = "";
+
+        let streamClosed = false;
+
+        // The read method of a ReadableDefaultStreamReader returns an object
+        // of the form {done, value}. If the stream is closed, meaning that it
+        // is finished getting read, done will be set to true and value will
+        // be undefined, so the object would look like {done: true, value:
+        // undefined}. Otherwise done will be set to false and value will be
+        // set to the chunk that was read.
+
+        while (!streamClosed) {
+
+          // Object returned by the read method is unpacked into variables
+          // done and value.
+          const {done, value} = await reader.read();
+
+          // If the stream is closed, then user will be able to send a message
+          // again and the loop will end since streamClosed is set to true.
+          if (done) {
+            streamClosed = true;
+
+            setSendDisabled(false);
+
+          } else {
+            chatbotResponse += value;
+
+            appendChunkToMessages(value, chatbotResponse);
+          }
+        }
+
+      }
+    ).catch(error => console.error('Error:', error));
+  }
+
+  function appendChunkToMessages(chunk, chatbotResponse) {
+    // On the first chunk, the chunk will be equal to the chatbotResponse.
+
+    const firstChunk = chunk === chatbotResponse
+
+    // setMessages([...messages.slice(0, messages.length - 1), chatbotReply]) 
+    // does not work because the previous setMessages has not necessarily
+    // actually been performed yet because state updates are batched
+    // together. Functionally updating messages guarantees that
+    // messages is updated based on what it was previously set to.
+    // Source: https://dev.to/gakii/functional-state-update-in-react-42io. 
+
+    // On the first chunk a new message will be added to messages.
+    if (firstChunk) {
+
+      setMessages(previousMessages => [...previousMessages, chatbotResponse]);
+    } else {
+      // The last message will be replaced with the full response after the
+      // first chunk.
+      setMessages(previousMessages => {
+        return [...previousMessages.slice(0, previousMessages.length - 1), chatbotResponse];
+      });
+    }
   }
 
   return (
@@ -81,7 +139,7 @@ function App() {
           onChange = {newTextEvent => setCurrMessage(newTextEvent.target.value)}
           onKeyDown = {(e) => {
             // This makes the enter key have the same effect as the send button.
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !sendDisabled) {
               getMessage()
             }
           }} 
