@@ -17,7 +17,7 @@ app = Flask(__name__)
 # sends back the chatbot's response.
 
 @app.route("/chat", methods = ["POST"])
-@cross_origin(origins = [frontend_url, "*"], allow_headers = "Content-Type")
+@cross_origin(origins = frontend_url, allow_headers = "Content-Type")
 def chat():
     '''
     This function returns messages based on a frontend conversation.
@@ -36,11 +36,10 @@ def chat():
     # function, this method returns a stream.
     return messaging.send_message(frontend_conversation)
 
-'''
 def create_app():
     return app
+
 '''
-
-
 if __name__ == "__main__":
     app.run(debug = True)
+'''
