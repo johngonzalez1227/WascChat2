@@ -124,7 +124,7 @@ function App() {
           onChange = {newTextEvent => setCurrMessage(newTextEvent.target.value)}
           onKeyDown = {(e) => {
             // This makes the enter key have the same effect as the send button.
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !sendDisabled) {
               getMessage()
             }
           }} 
