@@ -52,7 +52,7 @@ def send_message(frontend_conversation):
     ):
         output_message += chunk.text
 
-    return output_message
+        yield output_message
 
 def format_frontend(frontend):
     '''

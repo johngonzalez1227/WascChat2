@@ -3,7 +3,8 @@ import "./App.css"
 
 function App() {
 
-  const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app"
+  //const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app"
+  const backendUrl = "http://127.0.0.1:5000"
   const [messages, setMessages] = useState([]);
   const [sendDisabled, setSendDisabled] = useState(false);
   const [currMessage, setCurrMessage] = useState("");
@@ -36,6 +37,8 @@ function App() {
     setMessages([...messages, currMessage]);
 
     setCurrMessage("");
+
+    let chatbotReply = ""
     
     // Headers mandatory for requests that include content like POST
     await fetch(
@@ -48,23 +51,63 @@ function App() {
         }
       }
     ).then(
-      res => res.json()
-    ).then(
-      // Using setMessages([...messages, data.message]) does not work because
-      // the previous setMessages has not necessarily actually been performed
-      // yet because state updates are batched together. Functionally updating
-      // messages guarantees that messages is updated based on what it was
-      // previously set to.
-      // Source: https://dev.to/gakii/functional-state-update-in-react-42io.
-      data => {
-        setMessages(
-          previousMessages => [...previousMessages, data.message]
-        );
-      }
-    
-    ).catch(error => console.error('Error:', error));;
+      res => {
+        // A TextDecoderStream object converts a stream of binary text to a
+        // stream of strings. A ReadableStream can be piped through a 
+        // TextDecoderStream to convert it to a stream of strings.
+        const streamDecoder = new TextDecoderStream("utf-8");
 
-    setSendDisabled(false);
+        // WritableStreams provide a method of writing a stream's contents to
+        // some destination.
+        const messageWriter = new WritableStream({
+
+          // The write method given to the first object passed to a writable
+          // stream is performed every time a chunk from a stream is ready to
+          // be written. 
+          write (chunk) {
+            chatbotReply += chunk;
+            
+            // If the chatbot's message has started already, the length of
+            // chatbotReply will not be 0.
+            const chatbotMessageStarted = chatbotReply.length !== 0
+
+            console.log(chatbotMessageStarted)
+
+            // The last element in messages is changed to the current part of
+            // the chatbot reply that has been yielded by the backend.
+            // Using 
+            // setMessages([...messages.slice(0, messages.length - 1), chatbotReply]) 
+            // does not work because the previous setMessages has not necessarily
+            // actually been performed yet because state updates are batched
+            // together. Functionally updating messages guarantees that
+            // messages is updated based on what it was previously set to.
+            // Source: https://dev.to/gakii/functional-state-update-in-react-42io. 
+            if (chatbotMessageStarted) {
+              console.log("original")
+              setMessages(
+                previousMessages => [...messages.slice(0, messages.length - 1), chatbotReply]
+              )
+            } else {
+              console.log("Hello")
+
+              // On the first chunk from the chatbot, rather than changing the
+              // last message in the list, a new message needs to be added.
+              setMessages(
+                previousMessages => [...messages, chatbotReply]
+              )
+            }
+          }
+        });
+        
+        // res.body is a ReadableStream object. Piping a ReadableStream object
+        // through a TextDecoderStream converts it to strings. Then, piping it
+        // to a WritableStream connects them, allowign the readable stream to
+        // be written based on the write method of the object passed to
+        // the WritableStream. 
+        res.body.pipeThrough(streamDecoder).pipeTo(messageWriter)
+        console.log("message: " + chatbotReply)
+      }
+    ).catch(error => console.error('Error:', error));
   }
 
   return (

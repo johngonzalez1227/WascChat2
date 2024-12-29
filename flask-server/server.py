@@ -17,7 +17,7 @@ app = Flask(__name__)
 # sends back the chatbot's response.
 
 @app.route("/chat", methods = ["POST"])
-@cross_origin(origins = frontend_url, allow_headers = "Content-Type")
+@cross_origin(origins = [frontend_url, "*"], allow_headers = "Content-Type")
 def chat():
     '''
     This function returns messages based on a frontend conversation.
@@ -32,14 +32,15 @@ def chat():
 
     # A message is sent to Vertex AI using the send_message function and that
     # message is returned as a dictionary with the key "message" and the
-    # Vertex AI response as its output.
-    return {"message": messaging.send_message(frontend_conversation)}
+    # Vertex AI response as its output. Because send_message is a generator
+    # function, this method returns a stream.
+    return messaging.send_message(frontend_conversation)
 
+'''
 def create_app():
     return app
-
-
 '''
+
+
 if __name__ == "__main__":
     app.run(debug = True)
-'''
