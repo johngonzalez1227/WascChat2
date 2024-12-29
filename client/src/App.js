@@ -108,6 +108,8 @@ function App() {
         console.log("message: " + chatbotReply)
       }
     ).catch(error => console.error('Error:', error));
+
+    setSendDisabled(false)
   }
 
   return (
