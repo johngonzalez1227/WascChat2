@@ -6,7 +6,6 @@ frontend_url = "https://wasc-chatbot-frontend-15118306301.us-central1.run.app"
 
 app = Flask(__name__)
 
-
 # Cross origin is configured so that the /chat endpoint allows requests from
 # the frontend URL. Since a JSON fetch request is made to the /chat endpoint,
 # with the header specifying that the content type is application/json, the
@@ -35,6 +34,15 @@ def chat():
     # Vertex AI response as its output. Because send_message is a generator
     # function, this method returns a stream.
     return messaging.send_message(frontend_conversation)
+
+# This API endpoint is used by the frontend to immediately cold start the
+# backend in cloud run if an instance is not already running. Since this
+# will be called immediately in the frontend, this should reduce the perceived
+# cold start time.
+@app.route("/start", methods = ["GET"])
+@cross_origin(origins = frontend_url)
+def start():
+    return "Started!"
 
 def create_app():
     return app

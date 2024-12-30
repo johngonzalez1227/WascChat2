@@ -1,14 +1,26 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import "./App.css"
 
 function App() {
 
-  const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app"
+  const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app";
   const [messages, setMessages] = useState([]);
   const [sendDisabled, setSendDisabled] = useState(false);
   const [currMessage, setCurrMessage] = useState("");
 
-  const getMessage = async () => {
+  // This useEffect function only runs when the website is first loaded. It is
+  // meant to start the backend in an attempt to reduce cold start time.
+  useEffect(
+    () => {
+
+      // Nothing needs to be done with the response.
+      fetch(
+        backendUrl + "/start"
+      ).catch(error => console.error('Error:', error));
+    },
+    []
+  )
+  const getMessage = () => {
 
     setSendDisabled(true);
 
@@ -38,7 +50,7 @@ function App() {
     setCurrMessage("");
     
     // Headers mandatory for requests that include content like POST
-    await fetch(
+    fetch(
       backendUrl + "/chat",
       {
         method: "POST", 
