@@ -8,18 +8,6 @@ function App() {
   const [sendDisabled, setSendDisabled] = useState(false);
   const [currMessage, setCurrMessage] = useState("");
 
-  // This useEffect function only runs when the website is first loaded. It is
-  // meant to start the backend in an attempt to reduce cold start time.
-  useEffect(
-    () => {
-
-      // Nothing needs to be done with the response.
-      fetch(
-        backendUrl + "/start"
-      ).catch(error => console.error('Error:', error));
-    },
-    []
-  )
   const getMessage = () => {
 
     setSendDisabled(true);
@@ -189,6 +177,30 @@ function App() {
   );
 }
 
+// This function returns a React.Fragment HTML component with \n's in a
+// JavaScript string converted to HTML breaks. Input is in {} because
+// properties passed in JSX to a function are considered an object, so this is
+// considered destructuring.
+function TextWithBreaks({outputText}) {
+  const textBody = [];
+
+    const textLines = outputText.split("\n");
+
+    // <> stands for Fragment. This is a react component that allows you to
+    // return multiple HTML components or a component without a container.
+    // Here Fragments are types out so that keys can be given to them.
+
+    for (let i = 0; i < textLines.length - 1; i++) {
+      textBody.push(<React.Fragment key = {i}>
+        {(textLines[i])}<br /> 
+      </React.Fragment>);
+    }
+
+    textBody.push(textLines[textLines.length - 1]);
+
+    return <React.Fragment>textBody</React.Fragment>;
+}
+
 // This function returns the display of messages between the user and chatbot.
 function MessageDisplay({messages}) {
 
@@ -217,6 +229,8 @@ function MessageDisplay({messages}) {
   }
 
   // This function converts messages to HTML by replacing \n with <br /> tags.
+  // Unlike TextWithBreaks, each subsection of the message is also bolded based
+  // on double asterisks.
   function messageToHtml(message) {
 
     const messageBody = [];
