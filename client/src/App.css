@@ -53,3 +53,11 @@ body {
   border-radius: 20px;
   margin-left: 2%;
 }
+
+.infoTextSection {
+  border-bottom: 1.5px solid;
+  height: fit-content;
+  width: 90%;
+  padding: 10px 15px 10px 15px;
+  margin: 5px 20px 5px 20px;
+}

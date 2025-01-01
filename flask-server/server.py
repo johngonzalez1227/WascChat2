@@ -35,15 +35,6 @@ def chat():
     # function, this method returns a stream.
     return messaging.send_message(frontend_conversation)
 
-# This API endpoint is used by the frontend to immediately cold start the
-# backend in cloud run if an instance is not already running. Since this
-# will be called immediately in the frontend, this should reduce the perceived
-# cold start time.
-@app.route("/start", methods = ["GET"])
-@cross_origin(origins = frontend_url)
-def start():
-    return "Started!"
-
 def create_app():
     return app
 
