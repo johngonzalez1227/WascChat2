@@ -270,7 +270,7 @@ function MessageDisplay({messages}) {
     }
 
     messageBody.push(
-      <React.Fragment key = {messages.length - 1}>
+      <React.Fragment key = {messageLines.length - 1}>
         {asterisksToBold(messageLines[messageLines.length - 1])}
       </React.Fragment>
     );
