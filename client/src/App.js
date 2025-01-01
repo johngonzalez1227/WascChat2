@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import "./App.css"
-
+import infoText from './informationalText.js'
 function App() {
 
   const backendUrl = "https://wasc-chatbot-backend-15118306301.us-central1.run.app";
@@ -127,6 +127,9 @@ function App() {
 
   return (
     <div>
+      <div className = "infoTextSection">
+        <EscapeCharsToHtml outputText = {infoText} />
+      </div>
 
       <div className = "messageSection">
         <MessageDisplay messages = {messages} />
@@ -198,7 +201,46 @@ function TextWithBreaks({outputText}) {
 
     textBody.push(textLines[textLines.length - 1]);
 
-    return <React.Fragment>textBody</React.Fragment>;
+    return <React.Fragment>{textBody}</React.Fragment>;
+}
+
+//This function converts
+function EscapeCharsToHtml({outputText}) {
+  const textBody = [];
+
+  const textLines = outputText.split("\n");
+
+
+  for (let i = 0; i < textLines.length - 1; i++) {
+    textBody.push(<React.Fragment key = {i}>
+      <EscapeCharsToHtmlHelper messageLines = {textLines[i]} /><br /> 
+    </React.Fragment>);
+  }
+
+  textBody.push(<EscapeCharsToHtmlHelper messageLines = {textLines[textLines.length - 1]} />);
+
+  return <React.Fragment>{textBody}</React.Fragment>;
+}
+
+
+function EscapeCharsToHtmlHelper({messageLine}){
+  if(messageLine == null){
+    return messageLine;
+  }
+  const messageSections = messageLine.split("\t");
+  if(messageSections.length<2){
+    return messageLine;
+  } 
+  const sectionsWithTabs = [];
+
+  for(let i = 1; i < messageSections.length; i++){
+    sectionsWithTabs.push(<React.Fragment key = {i}>
+      &emsp;{(messageSections[i])}
+    </React.Fragment>);
+  }
+
+  return <React.Fragment>{sectionsWithTabs}</React.Fragment>
+
 }
 
 // This function returns the display of messages between the user and chatbot.
