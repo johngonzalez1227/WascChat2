@@ -130,7 +130,7 @@ function App() {
       <div className = "infoTextSection">
         <InformationToHtml outputText = {infoText} />
       </div>
-
+      <hr style = {{"color": "black"}}/>
       <div className = "messageSection">
         <MessageDisplay messages = {messages} />
       </div>
