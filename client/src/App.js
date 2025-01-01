@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import "./App.css"
 import infoText from './informationalText.js'
 function App() {
@@ -128,7 +128,7 @@ function App() {
   return (
     <div>
       <div className = "infoTextSection">
-        <EscapeCharsToHtml outputText = {infoText} />
+        <InformationToHtml outputText = {infoText} />
       </div>
 
       <div className = "messageSection">
@@ -180,95 +180,77 @@ function App() {
   );
 }
 
-// This function returns a React.Fragment HTML component with \n's in a
+// This function returns a JavaScript string with \n's in a
 // JavaScript string converted to HTML breaks. Input is in {} because
 // properties passed in JSX to a function are considered an object, so this is
-// considered destructuring.
-function TextWithBreaks({outputText}) {
-  const textBody = [];
-
-    const textLines = outputText.split("\n");
-
-    // <> stands for Fragment. This is a react component that allows you to
-    // return multiple HTML components or a component without a container.
-    // Here Fragments are types out so that keys can be given to them.
-
-    for (let i = 0; i < textLines.length - 1; i++) {
-      textBody.push(<React.Fragment key = {i}>
-        {(textLines[i])}<br /> 
-      </React.Fragment>);
-    }
-
-    textBody.push(textLines[textLines.length - 1]);
-
-    return <React.Fragment>{textBody}</React.Fragment>;
-}
-
-//This function converts
-function EscapeCharsToHtml({outputText}) {
+// considered destructuring. Additionally, within this function, dashes will
+// be turned to HTML lists, and double asterisks will be turned into bold text.
+function InformationToHtml({outputText}) {
   const textBody = [];
 
   const textLines = outputText.split("\n");
 
-
+  // <> stands for Fragment. This is a react component that allows you to
+  // return multiple HTML components or a component without a container.
+  // Here Fragments are typed out so that keys can be given to them.
   for (let i = 0; i < textLines.length - 1; i++) {
     textBody.push(<React.Fragment key = {i}>
-      <EscapeCharsToHtmlHelper messageLines = {textLines[i]} /><br /> 
+      <InformationLine textLine = {textLines[i]} /><br /> 
     </React.Fragment>);
   }
 
-  textBody.push(<EscapeCharsToHtmlHelper messageLines = {textLines[textLines.length - 1]} />);
+  // The last element in the split line does not need a break after it.
+  textBody.push(
+    <React.Fragment key = {textLines.length - 1} >
+      <InformationLine textLine = {textLines[textLines.length - 1]} />
+    </React.Fragment>
+  );
 
   return <React.Fragment>{textBody}</React.Fragment>;
 }
 
 
-function EscapeCharsToHtmlHelper({messageLine}){
-  if(messageLine == null){
-    return messageLine;
-  }
-  const messageSections = messageLine.split("\t");
-  if(messageSections.length<2){
-    return messageLine;
-  } 
-  const sectionsWithTabs = [];
+function InformationLine({textLine}){
 
-  for(let i = 1; i < messageSections.length; i++){
-    sectionsWithTabs.push(<React.Fragment key = {i}>
-      &emsp;{(messageSections[i])}
-    </React.Fragment>);
+  // If there is a dash at the beginning of textLine, it should be a list
+  // element.
+  if (textLine.length > 0 && textLine[0] === "-") {
+
+    // textLine.substring(1) removes the dash as listing will be handled by
+    // <li>
+    return <li>{asterisksToBold(textLine.substring(1))}</li>
+  } else {
+    return <>{asterisksToBold(textLine)}</>
   }
 
-  return <React.Fragment>{sectionsWithTabs}</React.Fragment>
+}
 
+// This function bolds text surrounded by double asterisks.
+function asterisksToBold(textLine) {
+
+  const textSections = textLine.split("**");
+
+  // The first section will be empty or will include the text before the
+  // bold. The next will include bolded text. Then there will be text that
+  // is not bolded. Effectively, any odd text section is bold.
+
+  const sectionsWithBoldText = [];
+
+  for (let i = 0; i < textSections.length; i++) {
+    if (i % 2 === 0) {
+      sectionsWithBoldText.push(<React.Fragment key = {i}>{textSections[i]}</React.Fragment>);
+    }
+
+    else {
+      sectionsWithBoldText.push(<b key = {i}>{textSections[i]}</b>);
+    }
+  }
+
+  return sectionsWithBoldText
 }
 
 // This function returns the display of messages between the user and chatbot.
 function MessageDisplay({messages}) {
-
-  // This function bolds text surrounded by double asterisks.
-  function asterisksToBold(messageLine) {
-
-    const messageSections = messageLine.split("**");
-
-    // The first section will be empty or will include the message before the
-    // bold. The next will include bolded text. Then there will be text that
-    // is not bolded. Effectively, any odd message section is bold.
-
-    const sectionsWithBoldText = [];
-
-    for (let i = 0; i < messageSections.length; i++) {
-      if (i % 2 === 0) {
-        sectionsWithBoldText.push(<React.Fragment key = {i}>{messageSections[i]}</React.Fragment>);
-      }
-
-      else {
-        sectionsWithBoldText.push(<b key = {i}>{messageSections[i]}</b>);
-      }
-    }
-
-    return sectionsWithBoldText
-  }
 
   // This function converts messages to HTML by replacing \n with <br /> tags.
   // Unlike TextWithBreaks, each subsection of the message is also bolded based
@@ -289,7 +271,11 @@ function MessageDisplay({messages}) {
       </React.Fragment>);
     }
 
-    messageBody.push(messageLines[messageLines.length - 1]);
+    messageBody.push(
+      <React.Fragment key = {messages.length - 1}>
+        {asterisksToBold(messageLines[messageLines.length - 1])}
+      </React.Fragment>
+    );
 
     return messageBody;
   }
