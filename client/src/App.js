@@ -127,10 +127,6 @@ function App() {
 
   return (
     <div>
-      <div className = "infoTextSection">
-        <InformationToHtml outputText = {infoText} />
-      </div>
-      <hr style = {{"color": "black"}}/>
       <div className = "messageSection">
         <MessageDisplay messages = {messages} />
       </div>
@@ -206,7 +202,9 @@ function InformationToHtml({outputText}) {
     </React.Fragment>
   );
 
-  return <React.Fragment>{textBody}</React.Fragment>;
+  // Horizontal padding is added here is the CSS infoTextSection class in
+  // App.CSS only accounts for vertical padding of its components. 
+  return <p style = {{"padding": "0px 35px 0px 35px"}}>{textBody}</p>;
 }
 
 
@@ -301,10 +299,16 @@ function MessageDisplay({messages}) {
     }
   );
   
+  // Because the information section should come first and the flex-direction is
+  // column reverse, the information section is added last.
 
   return (
     <div className = "messageSection">
       {messageChain}
+      <div className = "infoTextSection">
+        <InformationToHtml outputText = {infoText} />
+        <hr/>
+      </div>
     </div>
   );
 }
